@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5EFE4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17121C" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pal Book">
+<title>Pal Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..800,0..100,0..1&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5EFE4; --paper:#FFFBF4; --paper-2:#FBF5EA; --ink:#22192B; --ink-2:#6E6474; --ink-3:#A39AA6; --line:#E8DECD;
+  --mint:#14A88E; --sun:#F2A900; --grape:#7457F5; --rose:#F2477A; --coral:#FF6F59;
+  --mint-soft:#D5F2EA; --sun-soft:#FFF0C7; --grape-soft:#E6E0FF; --rose-soft:#FFDDE7;
+  --dock:#22192B; --dock-ink:#FFFBF4; --shadow:0 1px 0 rgba(34,25,43,.04),0 8px 24px -12px rgba(34,25,43,.18);
+  --tile-filter:brightness(1.08) contrast(1.08) saturate(1.05); --missing:grayscale(1) brightness(1.12) contrast(.95); --missing-op:.42;
+  --r:18px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16111B; --paper:#211A28; --paper-2:#1C1622; --ink:#F6EFE6; --ink-2:#ABA0B2; --ink-3:#6F6577; --line:#33293C;
+    --mint:#3DD6B5; --sun:#FFC94D; --grape:#9C86FF; --rose:#FF7AA0; --coral:#FF8B78;
+    --mint-soft:#163A33; --sun-soft:#3A2F12; --grape-soft:#2A2350; --rose-soft:#43182A;
+    --dock:#F6EFE6; --dock-ink:#16111B; --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 30px -14px rgba(0,0,0,.7);
+    --missing-op:.5;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16111B; --paper:#211A28; --paper-2:#1C1622; --ink:#F6EFE6; --ink-2:#ABA0B2; --ink-3:#6F6577; --line:#33293C;
+  --mint:#3DD6B5; --sun:#FFC94D; --grape:#9C86FF; --rose:#FF7AA0; --coral:#FF8B78;
+  --mint-soft:#163A33; --sun-soft:#3A2F12; --grape-soft:#2A2350; --rose-soft:#43182A;
+  --dock:#F6EFE6; --dock-ink:#16111B; --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 30px -14px rgba(0,0,0,.7);
+  --missing-op:.5;
+  color-scheme:dark;
+}
+:root.allcolor{ --missing:none; --missing-op:1 }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.45 Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  padding-bottom:calc(110px + env(safe-area-inset-bottom));overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,select,textarea{font:inherit;color:inherit}
+.serif{font-family:Fraunces,Georgia,serif;font-variation-settings:"SOFT" 100,"WONK" 1}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- header ---------- */
+header.top{padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:8px}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:38px;height:38px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center;transform:rotate(-6deg)}
+.brand .mark svg{width:24px;height:24px}
+.brand h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.brand small{display:block;font-size:12px;color:var(--ink-2);font-weight:600;letter-spacing:.02em;margin-top:3px}
+.iconbtn{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--paper);box-shadow:var(--shadow);border:1px solid var(--line)}
+.iconbtn:active{transform:scale(.95)}
+
+.hero{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
+.score{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:18px 18px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden;text-align:left;width:100%}
+.score .big{font-size:56px;line-height:.9;font-weight:700;letter-spacing:-.04em;display:flex;align-items:baseline;gap:8px}
+.score .big span{font-size:22px;color:var(--ink-3);font-weight:500;letter-spacing:-.01em}
+.score .lbl{font-size:13px;color:var(--ink-2);font-weight:600;margin-top:6px;display:flex;gap:6px}
+.score .lbl b{color:var(--ink)}
+.bar{height:10px;border-radius:99px;background:var(--paper-2);border:1px solid var(--line);margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--mint),#7FD9A6 60%,var(--sun));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.score .peek{position:absolute;right:16px;top:16px;width:84px;height:84px;border-radius:50%;background:var(--c,#EAE6DF);pointer-events:none;overflow:hidden;transform:rotate(8deg);box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.score .peek img{position:absolute;inset:8%;width:84%;height:84%;object-fit:contain;mix-blend-mode:multiply;filter:var(--tile-filter)}
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mini{border-radius:18px;padding:12px 12px 10px;text-align:left;border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:2px}
+.mini b{font-size:26px;line-height:1;font-weight:700;letter-spacing:-.03em}
+.mini span{font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;color:var(--ink-2)}
+.mini span svg{width:14px;height:14px}
+.mini.wish span{color:var(--sun)} .mini.trade span{color:var(--grape)} .mini.fave span{color:var(--rose)}
+.mini.on{outline:2px solid currentColor;outline-offset:-2px}
+.mini.wish.on{color:var(--sun)} .mini.trade.on{color:var(--grape)} .mini.fave.on{color:var(--rose)}
+.mini.on b{color:var(--ink)}
+@media (min-width:760px){ .hero{grid-template-columns:1.4fr 1fr} .minis{grid-template-columns:repeat(3,1fr)} }
+
+/* ---------- controls ---------- */
+.controls{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);padding:10px 0 8px;margin-top:10px;border-bottom:1px solid transparent;transition:border-color .2s}
+.controls.stuck{border-bottom-color:var(--line)}
+.searchrow{display:flex;gap:8px}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:0 12px;height:44px;min-width:0}
+.search input{border:0;outline:0;background:none;flex:1;min-width:0;font-weight:600;height:100%}
+.search input::placeholder{color:var(--ink-3)}
+.search svg{color:var(--ink-3)}
+.search .clear{color:var(--ink-3);display:none}
+.search.has .clear{display:grid}
+.sortsel{position:relative}
+.sortsel select{appearance:none;-webkit-appearance:none;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--paper);padding:0 34px 0 12px;font-weight:700;font-size:14px;max-width:132px}
+.sortsel svg{position:absolute;right:10px;top:13px;pointer-events:none;color:var(--ink-2)}
+.seg{display:flex;gap:6px;margin-top:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-right:-16px;padding-right:16px}
+.seg::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+.pill{flex:none;height:34px;padding:0 13px;border-radius:99px;border:1px solid var(--line);background:var(--paper);font-weight:700;font-size:13.5px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;color:var(--ink-2)}
+.pill em{font-style:normal;font-size:12px;color:var(--ink-3);font-weight:700}
+.pill.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.pill.on em{color:color-mix(in srgb,var(--bg) 65%,transparent)}
+.chips{display:flex;gap:6px;margin-top:8px;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+.chip{flex:none;height:30px;padding:0 11px 0 6px;border-radius:99px;font-weight:700;font-size:12.5px;display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px dashed var(--line);color:var(--ink-2)}
+.chip .dot{width:20px;height:20px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-size:9.5px;color:#22192B;font-weight:800;position:relative;overflow:hidden}
+.chip .dot::after{content:"";position:absolute;inset:0;background:conic-gradient(rgba(34,25,43,.55) calc(var(--p)*1%),transparent 0);mix-blend-mode:multiply;border-radius:50%}
+.chip.on{border-style:solid;border-color:var(--ink);color:var(--ink);background:var(--paper)}
+.chip.done .dot{box-shadow:0 0 0 2px var(--mint)}
+.chip.plain{padding:0 12px}
+
+/* ---------- grid ---------- */
+.resultline{display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px;font-size:13px;color:var(--ink-2);font-weight:600}
+.resultline button{font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:820px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}}
+@media (min-width:1080px){.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.card{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:6px 6px 10px;box-shadow:var(--shadow);content-visibility:auto;contain-intrinsic-size:auto 250px;transition:transform .15s}
+.tile{display:block;width:100%;aspect-ratio:1;border-radius:13px;background:var(--c,#EEE);position:relative;overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.tile img{position:absolute;inset:6%;width:88%;height:88%;object-fit:contain;mix-blend-mode:multiply;filter:var(--missing);opacity:var(--missing-op);transition:filter .35s,opacity .35s,transform .35s cubic-bezier(.2,.9,.3,1.4);-webkit-user-drag:none;pointer-events:none}
+.card.own .tile img{filter:var(--tile-filter);opacity:1}
+.tile:active img{transform:scale(.94)}
+.card.pop .tile img{animation:pop .45s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+.stamp{position:absolute;right:7px;top:7px;width:30px;height:30px;border-radius:50%;background:var(--mint);color:#fff;display:grid;place-items:center;transform:scale(0) rotate(-30deg);transition:transform .35s cubic-bezier(.2,.9,.3,1.6);box-shadow:0 3px 8px -2px rgba(0,0,0,.25)}
+.stamp svg{width:17px;height:17px;stroke-width:3}
+.card.own .stamp{transform:scale(1) rotate(0)}
+.qty{position:absolute;right:5px;top:37px;font-size:11px;font-weight:800;background:var(--ink);color:var(--bg);border-radius:99px;padding:1px 6px}
+.flags{position:absolute;left:7px;top:7px;display:flex;flex-direction:column;gap:4px}
+.flag{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 2px 6px -2px rgba(0,0,0,.3);animation:in .3s cubic-bezier(.2,.9,.3,1.6)}
+.flag svg{width:13px;height:13px;stroke-width:2.6}
+.flag.w{background:var(--sun)} .flag.t{background:var(--grape)} .flag.f{background:var(--rose)} .flag.f svg{fill:#fff}
+.flag.n{background:var(--ink);color:var(--bg)}
+@keyframes in{from{transform:scale(0)}}
+.ribbon{position:absolute;left:8px;bottom:7px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.75);color:#22192B}
+.ribbon.new{background:#22192B;color:#FFFBF4}
+.meta{padding:9px 4px 0 6px;display:flex;gap:6px;align-items:flex-start}
+.meta .txt{flex:1;min-width:0}
+.meta .nm{font-weight:700;font-size:14px;line-height:1.2;letter-spacing:-.005em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta .sub{font-size:11.5px;color:var(--ink-3);font-weight:700;margin-top:3px;letter-spacing:.02em}
+.meta .more{width:28px;height:28px;margin:-3px -2px 0 0;border-radius:9px;display:grid;place-items:center;color:var(--ink-3)}
+.meta .more:hover{background:var(--paper-2);color:var(--ink)}
+.note-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--coral);margin-left:5px;vertical-align:2px}
+.empty{text-align:center;padding:60px 20px;color:var(--ink-2)}
+.empty h3{font-size:24px;margin:0 0 6px;color:var(--ink)}
+
+/* ---------- dock ---------- */
+.dock{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;background:var(--dock);color:var(--dock-ink);border-radius:24px;padding:6px;display:flex;gap:2px;box-shadow:0 18px 40px -12px rgba(20,10,30,.5);max-width:calc(100% - 24px)}
+.dock .cap{position:absolute;left:50%;transform:translateX(-50%);top:-26px;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;background:var(--bg);padding:2px 10px;border-radius:99px;border:1px solid var(--line)}
+.mode{width:62px;height:54px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:800;letter-spacing:.03em;opacity:.62;transition:background .2s,opacity .2s,color .2s}
+.mode svg{width:21px;height:21px}
+.mode.on{opacity:1;background:var(--mc);color:#fff}
+.mode[data-m=info].on{color:var(--dock);background:var(--dock-ink)}
+@media (max-width:360px){.mode{width:54px}}
+
+/* ---------- sheet ---------- */
+.scrim{position:fixed;inset:0;background:rgba(22,14,28,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:61;left:0;right:0;bottom:0;max-height:92vh;background:var(--paper);border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -20px 60px -20px rgba(0,0,0,.4)}
+.sheet.open{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:10px auto 0;flex:none}
+.sheet .body{overflow-y:auto;padding:8px 20px calc(24px + env(safe-area-inset-bottom));overscroll-behavior:contain}
+.sheet .x{position:absolute;right:14px;top:14px;z-index:2}
+@media (min-width:760px){
+  .sheet{left:50%;bottom:50%;right:auto;width:min(560px,92vw);border-radius:28px;transform:translate(-50%,60%) scale(.96);opacity:0;transition:transform .3s cubic-bezier(.2,.9,.25,1),opacity .2s;max-height:88vh}
+  .sheet.open{transform:translate(-50%,50%);opacity:1}
+  .sheet .grab{display:none}
+}
+.d-hero{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:center;margin-top:8px}
+.d-img{aspect-ratio:1;border-radius:22px;background:var(--c);position:relative;overflow:hidden}
+.d-img img{position:absolute;inset:5%;width:90%;height:90%;object-fit:contain;mix-blend-mode:multiply;filter:var(--tile-filter)}
+.d-img .flip{position:absolute;right:6px;bottom:6px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.8);color:#22192B;display:grid;place-items:center}
+.d-img .flip svg{width:15px;height:15px}
+.d-name{font-size:28px;line-height:1.02;margin:0;font-weight:700;letter-spacing:-.025em;padding-right:36px}
+.d-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.tag{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:7px;background:var(--paper-2);border:1px solid var(--line);color:var(--ink-2);letter-spacing:.02em}
+.tag.ret{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+.act{border-radius:16px;border:1.5px solid var(--line);padding:11px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--ink-2);transition:all .2s}
+.act svg{width:22px;height:22px}
+.act.on{border-color:var(--mc);background:var(--mcs);color:var(--mc)}
+.act.on[data-a=fave] svg{fill:currentColor}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .k{font-weight:700;font-size:14px}
+.row .k small{display:block;font-weight:600;font-size:12px;color:var(--ink-3)}
+.stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.stepper button{width:38px;height:36px;display:grid;place-items:center;font-size:18px;font-weight:700}
+.stepper button:active{background:var(--paper-2)}
+.stepper output{min-width:32px;text-align:center;font-weight:800}
+.sizes{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.sz{font-size:12px;font-weight:700;padding:6px 10px;border-radius:10px;border:1px solid var(--line);color:var(--ink-2)}
+.sz.on{background:var(--mint-soft);border-color:var(--mint);color:var(--mint)}
+.section-h{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 6px}
+textarea.note{width:100%;min-height:88px;border-radius:14px;border:1px solid var(--line);background:var(--paper-2);padding:12px;resize:vertical;outline:0;font-weight:500;line-height:1.45}
+textarea.note:focus{border-color:var(--ink-2)}
+.saved{font-size:12px;color:var(--mint);font-weight:700;opacity:0;transition:opacity .3s;margin-left:6px}
+.saved.on{opacity:1}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.fact{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.fact small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.fact b{font-size:14.5px}
+.bio{font-size:14.5px;color:var(--ink-2);margin:12px 0 0}
+.ext{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--line);padding-bottom:2px}
+
+.menu-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.mitem{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;background:var(--paper-2);border:1px solid var(--line);text-align:left;width:100%}
+.mitem .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);flex:none}
+.mitem b{display:block;font-size:15px}
+.mitem small{display:block;color:var(--ink-3);font-weight:600;font-size:12.5px}
+.mitem.danger b{color:var(--coral)}
+.toggle{margin-left:auto;width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.toggle::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on{background:var(--mint)}
+.toggle.on::after{transform:translateX(18px)}
+.h2{font-size:26px;margin:4px 0 2px;font-weight:700;letter-spacing:-.02em}
+.lede{color:var(--ink-2);margin:0 0 6px;font-size:14px}
+.trow{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
+.trow .sw{width:20px;height:20px;border-radius:7px;background:var(--c)}
+.trow .tn{font-weight:700;font-size:14px}
+.trow .tb{height:6px;border-radius:9px;background:var(--paper-2);margin-top:5px;overflow:hidden;border:1px solid var(--line)}
+.trow .tb i{display:block;height:100%;background:var(--mint);border-radius:9px}
+.trow .tc{font-weight:800;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.trow.done .tc{color:var(--mint)}
+.seg2{display:flex;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg2 button{flex:1;padding:7px 10px;border-radius:9px;font-weight:700;font-size:13px;color:var(--ink-2)}
+.seg2 button.on{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(132px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;z-index:70;background:var(--ink);color:var(--bg);border-radius:16px;padding:10px 10px 10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:14px;box-shadow:0 14px 30px -10px rgba(0,0,0,.45);transition:all .25s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{background:color-mix(in srgb,var(--bg) 18%,transparent);padding:6px 12px;border-radius:10px;font-weight:800;font-size:13px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.confetti i{position:absolute;width:9px;height:14px;border-radius:2px;top:-20px;animation:fall 1.6s cubic-bezier(.2,.6,.4,1) forwards}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--r))}}
+.foot{text-align:center;color:var(--ink-3);font-size:12px;font-weight:600;margin:40px 0 0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top wrap">
+  <div class="brandrow">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-5 .5-9 1.5-12"/><path d="M13.5 9C11 5 7 4.5 4 6c3 .5 6 1.5 9.5 3Z" fill="currentColor"/><path d="M13.5 9c1-4 4.5-6 8-5-2.5 1-5 2.5-8 5Z" fill="currentColor"/><path d="M13.5 9c3.5-.5 6.5 1.5 7.5 4.5-3-1.5-5.5-2.5-7.5-4.5Z" fill="currentColor"/><path d="M13.5 9C10 9.5 7 12 6.5 15c2.5-2.5 4.5-4.5 7-6Z" fill="currentColor"/></svg></div>
+      <div><h1 class="serif">Pal Book</h1><small>My Palm Pals collection</small></div>
+    </div>
+    <button class="iconbtn" id="menuBtn" aria-label="Menu"><svg class="i" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button>
+  </div>
+
+  <div class="hero">
+    <button class="score" id="scoreBtn" aria-label="See progress by theme">
+      <div class="peek" id="peek"></div>
+      <div class="big serif" id="bigNum">0<span>/ 0</span></div>
+      <div class="lbl"><span>pals collected ·</span><b id="pct">0%</b></div>
+      <div class="bar"><i id="barFill"></i></div>
+    </button>
+    <div class="minis">
+      <button class="mini wish" data-view="wish"><b id="cWish">0</b><span><svg class="i" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Wishlist</span></button>
+      <button class="mini trade" data-view="trade"><b id="cTrade">0</b><span><svg class="i" viewBox="0 0 24 24"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg>To trade</span></button>
+      <button class="mini fave" data-view="fave"><b id="cFave">0</b><span><svg class="i" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Faves</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="controls" id="controls">
+  <div class="wrap">
+    <div class="searchrow">
+      <label class="search" id="searchBox">
+        <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search pals, IDs, personalities…" autocomplete="off" enterkeyhint="search">
+        <button class="clear" id="clearQ" aria-label="Clear search"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </label>
+      <div class="sortsel">
+        <select id="sort" aria-label="Sort">
+          <option value="new">Newest</option>
+          <option value="old">Oldest</option>
+          <option value="az">A–Z</option>
+          <option value="id">ID #</option>
+          <option value="got">Recently got</option>
+        </select>
+        <svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="seg" id="views"></div>
+    <div class="chips" id="themes"></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="resultline"><span id="resultTxt"></span><button id="resetF" hidden>Clear filters</button></div>
+  <div class="grid" id="grid"></div>
+  <p class="foot" id="foot"></p>
+</main>
+
+<nav class="dock" id="dock" aria-label="Tap mode">
+  <div class="cap" id="dockCap">Tap a pal to mark it collected</div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="grab"></div>
+  <button class="iconbtn x" id="closeSheet" aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="body" id="sheetBody"></div>
+</section>
+
+<div class="toast" id="toast"><span id="toastTxt"></span><button id="toastBtn">Undo</button></div>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script src="pals-data.js"></script>
+<script>
+(() => {
+"use strict";
+const PALS = (window.PALS || []).map((p, i) => ({...p, ord: i}));
+const BY = new Map(PALS.map(p => [String(p.id), p]));
+const KEY = "palbook.v1", PREF = "palbook.prefs.v1";
+
+// ---------- storage ----------
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch { return d; } };
+let S = load(KEY, {});
+let P = Object.assign({view:"all", theme:null, sort:"new", mode:"got", hideRet:false, kind:"all", allColor:false, dark:null}, load(PREF, {}));
+let saveT;
+const save = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }, 120); };
+const savePrefs = () => { try { localStorage.setItem(PREF, JSON.stringify(P)); } catch {} };
+const st = id => S[id] || {};
+const setSt = (id, patch) => {
+  const n = {...st(id), ...patch};
+  for (const k of Object.keys(n)) if (!n[k] || (Array.isArray(n[k]) && !n[k].length)) delete n[k];
+  if (Object.keys(n).length) S[id] = n; else delete S[id];
+  save();
+};
+
+// ---------- theme colors ----------
+const TINT = {Seasonal:"#FBDCD0",Licensed:"#DDE2FB",Cravings:"#FFE6BF",Whimsical:"#F1DCF6",Pet:"#FADDE6",Zoo:"#E4EFCB",Aquatic:"#CFEEF0",Forest:"#D9EBD2",Barn:"#F4E1CA",Critters:"#ECE4D3",Mythical:"#E6DCFA",Sports:"#D6E7F7",Galactic:"#D8D9F6",Americana:"#F6D8D8",Prehistoric:"#DEEDCD",Sentiment:"#FBDDE9",Vehicle:"#DCE6EE",Glam:"#F8DDF0",Celestial:"#E2E0F6",Other:"#EAE6DF"};
+const tint = t => TINT[t] || "#EAE6DF";
+const THEMES = [...new Set(PALS.map(p => p.t))].sort((a, b) => PALS.filter(p => p.t === b).length - PALS.filter(p => p.t === a).length);
+
+// ---------- icons ----------
+const I = {
+  got:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  wish:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
+  trade:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>',
+  fave:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+  more:'<circle cx="12" cy="6" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="18" r="1.2"/>',
+  flip:'<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  down:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  up:'<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  archive:'<path d="M4 7h16M6 7v12h12V7M9 4h6l1 3H8z"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  sparkle:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+};
+const svg = (k, cls = "i") => `<svg class="${cls}" viewBox="0 0 24 24">${I[k]}</svg>`;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const MODES = [
+  {m:"got", label:"Got it", c:"var(--mint)", cs:"var(--mint-soft)", cap:"Tap a pal to mark it collected"},
+  {m:"wish", label:"Want", c:"var(--sun)", cs:"var(--sun-soft)", cap:"Tap a pal to add it to your wishlist"},
+  {m:"trade", label:"Trade", c:"var(--grape)", cs:"var(--grape-soft)", cap:"Tap a pal you'd trade away"},
+  {m:"fave", label:"Fave", c:"var(--rose)", cs:"var(--rose-soft)", cap:"Tap a pal to heart it"},
+  {m:"info", label:"Details", c:"var(--ink)", cs:"var(--paper-2)", cap:"Tap a pal for notes & details"},
+];
+const MODE = Object.fromEntries(MODES.map(x => [x.m, x]));
+
+// ---------- dom ----------
+const $ = s => document.querySelector(s);
+const grid = $("#grid");
+
+// ---------- filtering ----------
+const VIEWS = [
+  {v:"all", label:"All", test:() => true},
+  {v:"have", label:"Have", test:s => s.q > 0},
+  {v:"need", label:"Need", test:s => !s.q},
+  {v:"wish", label:"Wishlist", test:s => s.w},
+  {v:"trade", label:"Trade", test:s => s.tr},
+  {v:"fave", label:"Faves", test:s => s.f},
+  {v:"notes", label:"Notes", test:s => s.note},
+];
+const VT = Object.fromEntries(VIEWS.map(v => [v.v, v.test]));
+
+function baseList() {
+  return PALS.filter(p => (!P.hideRet || p.ret === false || st(p.id).q) && (P.kind === "all" || p.k === P.kind));
+}
+function filtered() {
+  const q = $("#q").value.trim().toLowerCase();
+  const terms = q ? q.split(/\s+/) : [];
+  let list = baseList().filter(p => {
+    const s = st(p.id);
+    if (!VT[P.view](s)) return false;
+    if (P.theme && p.t !== P.theme) return false;
+    if (terms.length) {
+      const hay = (p.n + " " + p.t + " " + p.no + " " + p.p + " " + p.lic + " " + p.d + " " + p.k + (p.ret ? " retired alumni" : "") + (p.new ? " new" : "") + " " + (s.note || "")).toLowerCase();
+      if (!terms.every(t => hay.includes(t))) return false;
+    }
+    return true;
+  });
+  const idKey = p => { const m = (p.no || "").match(/(\d+)-(\d+)/); return m ? +m[1] * 10000 + +m[2] : 1e9; };
+  const sorters = {
+    new: (a, b) => a.ord - b.ord,
+    old: (a, b) => b.ord - a.ord,
+    az: (a, b) => a.n.localeCompare(b.n),
+    id: (a, b) => idKey(a) - idKey(b),
+    got: (a, b) => (st(b.id).at || "").localeCompare(st(a.id).at || "") || a.ord - b.ord,
+  };
+  return list.sort(sorters[P.sort] || sorters.new);
+}
+
+// ---------- rendering ----------
+function cardHTML(p) {
+  const s = st(p.id);
+  const flags = [s.w && `<span class="flag w" title="On wishlist">${svg("wish")}</span>`, s.tr && `<span class="flag t" title="For trade">${svg("trade")}</span>`, s.f && `<span class="flag f" title="Favorite">${svg("fave")}</span>`].filter(Boolean).join("");
+  const rib = p.ret ? `<span class="ribbon">Retired</span>` : p.new ? `<span class="ribbon new">New</span>` : "";
+  return `<article class="card${s.q ? " own" : ""}" data-id="${p.id}" style="--c:${tint(p.t)}">
+    <button class="tile" aria-label="${esc(p.n)}${s.q ? ", collected" : ""}">
+      <img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'">
+      <span class="stamp">${svg("got")}</span>${s.q > 1 ? `<span class="qty">×${s.q}</span>` : ""}
+      <span class="flags">${flags}</span>${rib}
+    </button>
+    <div class="meta"><div class="txt"><div class="nm">${esc(p.n)}${s.note ? '<span class="note-dot" title="Has a note"></span>' : ""}</div><div class="sub">${p.no ? "#" + esc(p.no) + " · " : ""}${esc(p.t)}${p.k === "Clip-On" ? " · Clip" : ""}</div></div>
+    <button class="more" aria-label="Details for ${esc(p.n)}">${svg("more")}</button></div>
+  </article>`;
+}
+
+function render() {
+  const list = filtered();
+  grid.innerHTML = list.map(cardHTML).join("") || emptyHTML();
+  const any = P.view !== "all" || P.theme || $("#q").value || P.hideRet || P.kind !== "all";
+  $("#resultTxt").textContent = `${list.length} pal${list.length === 1 ? "" : "s"}${P.theme ? " in " + P.theme : ""}`;
+  $("#resetF").hidden = !any;
+  renderViews(); renderThemes(); renderStats();
+}
+function emptyHTML() {
+  const msg = {
+    wish:["Nothing on the wishlist yet","Switch the bottom bar to Want, then tap the pals you're hunting for."],
+    trade:["No trades lined up","Switch to Trade mode and tap your doubles."],
+    fave:["No faves yet","Switch to Fave mode and heart the ones you love most."],
+    have:["Your shelf is empty… for now","Tap any pal in Got it mode to start your collection."],
+    notes:["No notes yet","Open a pal's details to jot something down."],
+    need:["You've got them all!","Seriously impressive. Go touch some grass."],
+  }[P.view] || ["No pals match","Try a different search or clear your filters."];
+  return `<div class="empty" style="grid-column:1/-1"><h3 class="serif">${msg[0]}</h3><p>${msg[1]}</p></div>`;
+}
+function updateCard(id) {
+  const el = grid.querySelector(`.card[data-id="${id}"]`);
+  if (!el) return;
+  const tmp = document.createElement("div"); tmp.innerHTML = cardHTML(BY.get(String(id)));
+  el.replaceWith(tmp.firstElementChild);
+  return grid.querySelector(`.card[data-id="${id}"]`);
+}
+function renderViews() {
+  const base = baseList();
+  $("#views").innerHTML = VIEWS.map(v => {
+    const n = base.filter(p => v.test(st(p.id)) && (!P.theme || p.t === P.theme)).length;
+    if (v.v === "notes" && !n && P.view !== "notes") return "";
+    return `<button class="pill${P.view === v.v ? " on" : ""}" data-view="${v.v}">${v.label} <em>${n}</em></button>`;
+  }).join("");
+}
+function themeCounts() {
+  const base = baseList(), out = {};
+  for (const t of THEMES) { const all = base.filter(p => p.t === t); out[t] = {n: all.length, h: all.filter(p => st(p.id).q).length}; }
+  return out;
+}
+function renderThemes() {
+  const c = themeCounts();
+  $("#themes").innerHTML = `<button class="chip plain${!P.theme ? " on" : ""}" data-theme="">All themes</button>` +
+    THEMES.filter(t => c[t].n).map(t => {
+      const pct = Math.round(c[t].h / c[t].n * 100);
+      return `<button class="chip${P.theme === t ? " on" : ""}${pct === 100 ? " done" : ""}" data-theme="${esc(t)}" style="--c:${tint(t)};--p:${pct}"><span class="dot"></span>${esc(t)} <span style="color:var(--ink-3)">${c[t].h}/${c[t].n}</span></button>`;
+    }).join("");
+}
+function renderStats() {
+  const base = baseList();
+  const have = base.filter(p => st(p.id).q).length;
+  $("#bigNum").innerHTML = `${have}<span>/ ${base.length}</span>`;
+  const pct = base.length ? have / base.length * 100 : 0;
+  $("#pct").textContent = (pct > 0 && pct < 1 ? "<1" : Math.round(pct)) + "%";
+  $("#barFill").style.width = pct + "%";
+  const cnt = k => PALS.filter(p => st(p.id)[k]).length;
+  $("#cWish").textContent = cnt("w"); $("#cTrade").textContent = cnt("tr"); $("#cFave").textContent = cnt("f");
+  document.querySelectorAll(".mini").forEach(b => b.classList.toggle("on", P.view === b.dataset.view));
+  // the little mascot in the corner: your most recent pal, or a random one
+  const recent = PALS.filter(p => st(p.id).q).sort((a, b) => (st(b.id).at || "").localeCompare(st(a.id).at || ""))[0];
+  const pick = recent || PALS[peekSeed % PALS.length];
+  if (pick && $("#peek").dataset.id !== String(pick.id)) { $("#peek").dataset.id = pick.id; $("#peek").style.setProperty("--c", tint(pick.t)); $("#peek").innerHTML = `<img src="${esc(pick.img)}" alt="">`; }
+}
+const peekSeed = Math.floor(Math.random() * 1000);
+
+function renderDock() {
+  $("#dock").innerHTML = `<div class="cap" id="dockCap">${MODE[P.mode].cap}</div>` + MODES.map(x =>
+    `<button class="mode${P.mode === x.m ? " on" : ""}" data-m="${x.m}" style="--mc:${x.c}" aria-pressed="${P.mode === x.m}">${svg(x.m)}${x.label}</button>`).join("");
+}
+
+// ---------- actions ----------
+let undoState = null;
+function act(id, mode, fromSheet) {
+  const p = BY.get(String(id)); if (!p) return;
+  const before = {...st(id)}, s = st(id);
+  let msg = "";
+  if (mode === "got") {
+    if (s.q) { setSt(id, {q: 0, tr: false, at: null, sz: null}); msg = `Removed ${p.n}`; }
+    else { setSt(id, {q: 1, w: false, at: new Date().toISOString()}); msg = s.w ? `Got ${p.n}! Crossed off your wishlist ✦` : `Got ${p.n}!`; }
+  } else if (mode === "wish") {
+    setSt(id, {w: !s.w}); msg = !s.w ? (s.q ? `${p.n} added to wishlist (you already have one)` : `${p.n} added to wishlist`) : `${p.n} off the wishlist`;
+  } else if (mode === "trade") {
+    if (!s.tr) { setSt(id, {tr: true, q: Math.max(s.q || 0, 1), at: s.at || new Date().toISOString()}); msg = s.q ? `${p.n} is up for trade` : `${p.n} up for trade (marked as collected too)`; }
+    else { setSt(id, {tr: false}); msg = `${p.n} off the trade list`; }
+  } else if (mode === "fave") {
+    setSt(id, {f: !s.f}); msg = !s.f ? `♥ ${p.n}` : `Unhearted ${p.n}`;
+  }
+  const el = updateCard(id);
+  if (el && mode === "got" && !before.q) { el.classList.add("pop"); }
+  renderStats(); renderViews(); renderThemes();
+  if (fromSheet) openDetail(id, true);
+  toast(msg, () => { if (Object.keys(before).length) S[id] = before; else delete S[id]; save(); updateCard(id); renderStats(); renderViews(); renderThemes(); if (fromSheet) openDetail(id, true); });
+  if (mode === "got" && !before.q) checkThemeDone(p.t);
+}
+function checkThemeDone(t) {
+  const c = themeCounts()[t];
+  if (c && c.n && c.h === c.n) { confetti(); setTimeout(() => toast(`You finished every ${t} pal! 🎉`), 1400); }
+  else if (baseList().every(p => st(p.id).q)) { confetti(); }
+}
+
+// ---------- tap + long-press on cards ----------
+let lp = null, lpFired = false;
+grid.addEventListener("pointerdown", e => {
+  const tile = e.target.closest(".tile"); if (!tile) return;
+  lpFired = false;
+  const id = tile.closest(".card").dataset.id, x = e.clientX, y = e.clientY;
+  lp = {t: setTimeout(() => { lpFired = true; navigator.vibrate?.(12); openDetail(id); }, 480), x, y};
+});
+const cancelLp = e => { if (lp && (!e || e.type !== "pointermove" || Math.hypot(e.clientX - lp.x, e.clientY - lp.y) > 10)) { clearTimeout(lp.t); lp = null; } };
+grid.addEventListener("pointermove", cancelLp); grid.addEventListener("pointerup", () => cancelLp()); grid.addEventListener("pointercancel", () => cancelLp());
+grid.addEventListener("contextmenu", e => { if (e.target.closest(".tile")) e.preventDefault(); });
+grid.addEventListener("click", e => {
+  const card = e.target.closest(".card"); if (!card) return;
+  const id = card.dataset.id;
+  if (e.target.closest(".more")) return openDetail(id);
+  if (!e.target.closest(".tile")) return;
+  if (lpFired) { lpFired = false; return; }
+  if (P.mode === "info") return openDetail(id);
+  act(id, P.mode);
+});
+
+// ---------- detail sheet ----------
+let sheetId = null;
+function openSheet(html) { $("#sheetBody").innerHTML = html; $("#sheet").classList.add("open"); $("#scrim").classList.add("open"); document.body.style.overflow = "hidden"; }
+function closeSheet() { $("#sheet").classList.remove("open"); $("#scrim").classList.remove("open"); document.body.style.overflow = ""; sheetId = null; }
+$("#scrim").onclick = closeSheet; $("#closeSheet").onclick = closeSheet;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+function openDetail(id, keepScroll) {
+  const p = BY.get(String(id)); if (!p) return;
+  const s = st(id), scroll = $("#sheetBody").scrollTop;
+  sheetId = String(id);
+  const acts = ["got", "wish", "trade", "fave"].map(m => {
+    const on = m === "got" ? s.q : m === "wish" ? s.w : m === "trade" ? s.tr : s.f;
+    const lbl = {got: on ? "Got it" : "Got it?", wish: "Want", trade: "Trade", fave: "Fave"}[m];
+    return `<button class="act${on ? " on" : ""}" data-a="${m}" style="--mc:${MODE[m].c};--mcs:${MODE[m].cs}">${svg(m)}${lbl}</button>`;
+  }).join("");
+  const sizes = p.s.length > 1 ? `<div class="row"><div class="k">Sizes I have<small>Tap each one you own</small></div><div class="sizes">${p.s.map(z => `<button class="sz${(s.sz || []).includes(z.n) ? " on" : ""}" data-sz="${esc(z.n)}">${esc(z.n.replace(" Inch", "″"))}</button>`).join("")}</div></div>` : "";
+  const facts = [
+    p.no && ["ID", "#" + p.no], ["Theme", p.t], p.p && ["Personality", p.p], p.bp && ["Best pal", p.bp],
+    p.d && ["First out", p.d], p.lic && ["Licensed", p.lic],
+  ].filter(Boolean).map(([k, v]) => `<div class="fact"><small>${k}</small><b>${esc(v)}</b></div>`).join("");
+  const got = s.at ? new Date(s.at).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : "";
+  openSheet(`
+    <div class="d-hero" style="--c:${tint(p.t)}">
+      <div class="d-img"><img id="dImg" src="${esc(p.img)}" alt="${esc(p.n)}">${p.img2 ? `<button class="flip" id="flip" aria-label="Other photo">${svg("flip")}</button>` : ""}</div>
+      <div><h2 class="d-name serif">${esc(p.n)}</h2>
+        <div class="d-tags">${p.ret ? '<span class="tag ret">Retired</span>' : ""}${p.new ? '<span class="tag">New release</span>' : ""}<span class="tag">${esc(p.k)}</span>${got ? `<span class="tag">Got ${got}</span>` : ""}</div>
+      </div>
+    </div>
+    <div class="acts">${acts}</div>
+    <div style="margin-top:6px">
+      ${s.q ? `<div class="row"><div class="k">How many I have<small>${s.q > 1 ? "Extras are great for trading" : "Got doubles? Bump it up"}</small></div><div class="stepper"><button data-qty="-1" aria-label="One fewer">−</button><output>${s.q}</output><button data-qty="1" aria-label="One more">+</button></div></div>` : ""}
+      ${s.q ? sizes : ""}
+    </div>
+    <div class="section-h">My notes <span class="saved" id="saved">Saved</span></div>
+    <textarea class="note" id="note" placeholder="Where you found it, who you traded with, why it's the best one…">${esc(s.note || "")}</textarea>
+    <div class="section-h">About</div>
+    <div class="facts">${facts}</div>
+    ${p.bio ? `<p class="bio">${esc(p.bio)}</p>` : ""}
+    <a class="ext" href="https://palmpals.com/products/${encodeURIComponent(p.h)}" target="_blank" rel="noopener">See it on palmpals.com ${svg("ext")}</a>
+  `);
+  if (keepScroll) $("#sheetBody").scrollTop = scroll;
+  const body = $("#sheetBody");
+  body.querySelectorAll(".act").forEach(b => b.onclick = () => act(id, b.dataset.a, true));
+  body.querySelectorAll("[data-qty]").forEach(b => b.onclick = () => {
+    const q = Math.max(0, (st(id).q || 0) + +b.dataset.qty);
+    if (q === 0) return act(id, "got", true);
+    setSt(id, {q, tr: q > 1 ? true : st(id).tr}); updateCard(id); renderStats(); renderViews(); openDetail(id, true);
+    if (q === 2 && +b.dataset.qty > 0) toast("Got a double, so it's on your trade list now");
+  });
+  body.querySelectorAll("[data-sz]").forEach(b => b.onclick = () => {
+    const cur = new Set(st(id).sz || []); cur.has(b.dataset.sz) ? cur.delete(b.dataset.sz) : cur.add(b.dataset.sz);
+    setSt(id, {sz: [...cur]}); b.classList.toggle("on");
+  });
+  let nt;
+  $("#note").oninput = e => { clearTimeout(nt); nt = setTimeout(() => { setSt(id, {note: e.target.value.trim() ? e.target.value : ""}); updateCard(id); renderViews(); const sv = $("#saved"); sv?.classList.add("on"); setTimeout(() => sv?.classList.remove("on"), 1200); }, 350); };
+  let alt = false;
+  if ($("#flip")) $("#flip").onclick = () => { alt = !alt; $("#dImg").src = alt ? p.img2 : p.img; };
+}
+
+// ---------- progress sheet ----------
+function openProgress() {
+  const c = themeCounts();
+  const base = baseList(), have = base.filter(p => st(p.id).q).length;
+  const rows = THEMES.filter(t => c[t].n).sort((a, b) => c[b].h / c[b].n - c[a].h / c[a].n || c[b].n - c[a].n).map(t => {
+    const pct = c[t].h / c[t].n * 100;
+    return `<button class="trow${pct === 100 ? " done" : ""}" data-goto="${esc(t)}" style="--c:${tint(t)}"><span class="sw"></span><span><span class="tn">${esc(t)}</span><span class="tb" style="display:block"><i style="width:${pct}%"></i></span></span><span class="tc">${c[t].h}/${c[t].n}${pct === 100 ? " ✓" : ""}</span></button>`;
+  }).join("");
+  const kinds = ["Mini", "Clip-On"].map(k => { const a = base.filter(p => p.k === k); return `${a.filter(p => st(p.id).q).length}/${a.length} ${k === "Mini" ? "plush" : "clip-ons"}`; }).join(" · ");
+  const extras = PALS.reduce((n, p) => n + Math.max(0, (st(p.id).q || 0) - 1), 0);
+  openSheet(`<h2 class="h2 serif">Your progress</h2><p class="lede">${have} of ${base.length} pals · ${kinds}${extras ? ` · ${extras} extra${extras > 1 ? "s" : ""}` : ""}</p>
+    <div class="section-h">By theme</div>${rows}`);
+  $("#sheetBody").querySelectorAll("[data-goto]").forEach(b => b.onclick = () => { P.theme = b.dataset.goto; P.view = "all"; savePrefs(); closeSheet(); render(); scrollToGrid(); });
+}
+
+// ---------- menu ----------
+function listText(kind) {
+  const pick = PALS.filter(p => kind === "trade" ? st(p.id).tr : st(p.id).w).sort((a, b) => a.n.localeCompare(b.n));
+  if (!pick.length) return "";
+  const head = kind === "trade" ? "Palm Pals I can trade:" : "Palm Pals I'm looking for:";
+  return head + "\n" + pick.map(p => `• ${p.n}${p.no ? " (#" + p.no + ")" : ""}${kind === "trade" && st(p.id).q > 1 ? " ×" + (st(p.id).q - 1) : ""}`).join("\n");
+}
+async function copy(txt) {
+  try { await navigator.clipboard.writeText(txt); return true; }
+  catch { const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); const ok = document.execCommand("copy"); t.remove(); return ok; }
+}
+const plural = n => `${n} pal${n === 1 ? "" : "s"}`;
+function openMenu() {
+  const isDark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  openSheet(`<h2 class="h2 serif">Settings & lists</h2>
+    <div class="section-h">Trading</div>
+    <div class="menu-list">
+      <button class="mitem" data-m="copyboth"><span class="ic">${svg("copy")}</span><span><b>Copy my trade post</b><small>What I have to trade + what I'm hunting for</small></span></button>
+      <button class="mitem" data-m="copytrade"><span class="ic">${svg("trade")}</span><span><b>Copy trade list only</b><small>${plural(PALS.filter(p => st(p.id).tr).length)}</small></span></button>
+      <button class="mitem" data-m="copywish"><span class="ic">${svg("wish")}</span><span><b>Copy wishlist only</b><small>${plural(PALS.filter(p => st(p.id).w).length)}</small></span></button>
+    </div>
+    <div class="section-h">Show</div>
+    <div class="seg2" id="kindSeg">${[["all", "Everything"], ["Mini", "Plush"], ["Clip-On", "Clip-ons"]].map(([k, l]) => `<button data-k="${k}" class="${P.kind === k ? "on" : ""}">${l}</button>`).join("")}</div>
+    <div class="menu-list">
+      <button class="mitem" data-m="ret"><span class="ic">${svg("archive")}</span><span><b>Hide retired pals</b><small>Unless you already have them</small></span><span class="toggle${P.hideRet ? " on" : ""}"></span></button>
+      <button class="mitem" data-m="color"><span class="ic">${svg("eye")}</span><span><b>Show missing pals in color</b><small>Off = missing ones look faded</small></span><span class="toggle${P.allColor ? " on" : ""}"></span></button>
+      <button class="mitem" data-m="dark"><span class="ic">${svg("moon")}</span><span><b>Dark mode</b><small>${P.dark === null ? "Following your device" : "Set by you"}</small></span><span class="toggle${isDark ? " on" : ""}"></span></button>
+    </div>
+    <div class="section-h">Backup</div>
+    <div class="menu-list">
+      <button class="mitem" data-m="export"><span class="ic">${svg("down")}</span><span><b>Save a backup</b><small>Downloads a small file with your whole collection</small></span></button>
+      <button class="mitem" data-m="import"><span class="ic">${svg("up")}</span><span><b>Restore from backup</b><small>Load a backup file (on this or another device)</small></span></button>
+      <button class="mitem danger" data-m="reset"><span class="ic">${svg("trash")}</span><span><b>Start over</b><small>Clears everything on this device</small></span></button>
+    </div>
+    <p class="foot">Catalog: ${PALS.length} pals from palmpals.com, updated ${esc(window.PALS_UPDATED || "")}.<br>Your collection lives in this browser. Save a backup now and then.</p>`);
+  const b = $("#sheetBody");
+  b.querySelectorAll("#kindSeg button").forEach(x => x.onclick = () => { P.kind = x.dataset.k; savePrefs(); render(); openMenu(); });
+  b.querySelectorAll(".mitem").forEach(x => x.onclick = async () => {
+    const m = x.dataset.m;
+    if (m.startsWith("copy")) {
+      const t = m === "copytrade" ? listText("trade") : m === "copywish" ? listText("wish") : [listText("trade"), listText("wish")].filter(Boolean).join("\n\n");
+      if (!t) return toast(m === "copywish" ? "Your wishlist is empty" : "Nothing marked yet. Use Trade and Want modes first");
+      toast((await copy(t)) ? "Copied! Paste it wherever you trade" : "Couldn't copy, sorry");
+    }
+    if (m === "ret") { P.hideRet = !P.hideRet; savePrefs(); render(); openMenu(); }
+    if (m === "color") { P.allColor = !P.allColor; savePrefs(); applyPrefs(); openMenu(); }
+    if (m === "dark") { P.dark = !isDark; savePrefs(); applyPrefs(); openMenu(); }
+    if (m === "export") {
+      const blob = new Blob([JSON.stringify({app: "palbook", v: 1, saved: new Date().toISOString(), data: S}, null, 1)], {type: "application/json"});
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `pal-book-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast("Backup saved");
+    }
+    if (m === "import") $("#importFile").click();
+    if (m === "reset") {
+      if (!confirm("Clear your whole collection, wishlist, trades, faves and notes on this device? This can't be undone (unless you saved a backup).")) return;
+      S = {}; save(); render(); closeSheet(); toast("Fresh start");
+    }
+  });
+}
+$("#importFile").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()), d = j.data || j;
+    const n = Object.keys(d).filter(k => BY.has(k)).length;
+    if (!n) return toast("That file doesn't look like a Pal Book backup");
+    if (!confirm(`Restore ${n} pals from this backup? It replaces what's on this device now.`)) return;
+    S = d; save(); render(); closeSheet(); toast(`Restored ${n} pals`);
+  } catch { toast("Couldn't read that file"); }
+};
+
+// ---------- toast & confetti ----------
+let tt;
+function toast(msg, undo) {
+  if (!msg) return;
+  $("#toastTxt").textContent = msg;
+  const btn = $("#toastBtn"); btn.hidden = !undo; btn.onclick = () => { undo?.(); $("#toast").classList.remove("on"); };
+  $("#toast").classList.add("on"); clearTimeout(tt); tt = setTimeout(() => $("#toast").classList.remove("on"), undo ? 3600 : 2600);
+}
+function confetti() {
+  const box = document.createElement("div"); box.className = "confetti";
+  const cols = ["#14A88E", "#F2A900", "#7457F5", "#F2477A", "#FF6F59", "#7FD9A6"];
+  for (let i = 0; i < 90; i++) {
+    const c = document.createElement("i");
+    c.style.cssText = `left:${Math.random() * 100}%;background:${cols[i % cols.length]};--dx:${(Math.random() - .5) * 200}px;--r:${Math.random() * 900 - 450}deg;animation-delay:${Math.random() * .4}s;animation-duration:${1.4 + Math.random()}s`;
+    box.appendChild(c);
+  }
+  document.body.appendChild(box); setTimeout(() => box.remove(), 2800);
+}
+
+// ---------- wiring ----------
+function applyPrefs() {
+  const r = document.documentElement;
+  if (P.dark === null) delete r.dataset.theme; else r.dataset.theme = P.dark ? "dark" : "light";
+  r.classList.toggle("allcolor", P.allColor);
+}
+function scrollToGrid() { const y = $("#controls").getBoundingClientRect().top + scrollY - 0; if (scrollY > y) scrollTo({top: y, behavior: "smooth"}); }
+
+$("#dock").addEventListener("click", e => { const b = e.target.closest(".mode"); if (!b) return; P.mode = b.dataset.m; savePrefs(); renderDock(); });
+$("#views").addEventListener("click", e => { const b = e.target.closest("[data-view]"); if (!b) return; P.view = b.dataset.view; savePrefs(); render(); scrollToGrid(); });
+document.querySelectorAll(".mini").forEach(b => b.onclick = () => { P.view = P.view === b.dataset.view ? "all" : b.dataset.view; P.theme = null; savePrefs(); render(); setTimeout(() => $("#controls").scrollIntoView({behavior: "smooth"}), 30); });
+$("#themes").addEventListener("click", e => { const b = e.target.closest("[data-theme]"); if (!b) return; P.theme = b.dataset.theme || null; savePrefs(); render(); b.scrollIntoView({inline: "center", block: "nearest", behavior: "smooth"}); scrollToGrid(); });
+$("#sort").value = P.sort; $("#sort").onchange = e => { P.sort = e.target.value; savePrefs(); render(); };
+let qt;
+$("#q").addEventListener("input", () => { $("#searchBox").classList.toggle("has", !!$("#q").value); clearTimeout(qt); qt = setTimeout(render, 120); });
+$("#clearQ").onclick = e => { e.preventDefault(); $("#q").value = ""; $("#searchBox").classList.remove("has"); render(); $("#q").focus(); };
+$("#resetF").onclick = () => { P.view = "all"; P.theme = null; P.hideRet = false; P.kind = "all"; $("#q").value = ""; $("#searchBox").classList.remove("has"); savePrefs(); render(); };
+$("#menuBtn").onclick = openMenu;
+$("#scoreBtn").onclick = openProgress;
+new IntersectionObserver(([e]) => $("#controls").classList.toggle("stuck", e.intersectionRatio < 1), {threshold: [1], rootMargin: "-1px 0px 0px 0px"}).observe($("#controls"));
+window.addEventListener("storage", e => { if (e.key === KEY) { S = load(KEY, {}); render(); } });
+
+$("#foot").textContent = `${PALS.length} pals · catalog from palmpals.com, ${window.PALS_UPDATED || ""}`;
+applyPrefs(); renderDock(); render();
+})();
+</script>
+</body>
+</html>
